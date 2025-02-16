@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_barrion/services/auth_service.dart';
 import 'package:proyecto_barrion/models/user_model.dart';
 import 'package:proyecto_barrion/services/notification_service.dart';
+import 'package:proyecto_barrion/services/sector_service.dart';
+import 'package:proyecto_barrion/models/sector_model.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -13,10 +15,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _sectorController = TextEditingController();
   final AuthService _authService = AuthService();
-  bool _isLoading = false;
+  final SectorService _sectorService = SectorService();
 
+  bool _isLoading = false;
+  String? _selectedSector; // Variable para el sector seleccionado
+  List<Sector> _sectors = []; // Lista de sectores disponibles
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSectors();
+  }
+
+  /// Obtiene los sectores desde el servicio
+  void _fetchSectors() async {
+    try {
+      List<Sector> sectors = await _sectorService.getAllSectors();
+      setState(() {
+        _sectors = sectors;
+      });
+    } catch (e) {
+      print("Error al obtener sectores: $e");
+    }
+  }
+
+  /// Registra al usuario con los datos ingresados
   void _registerUser() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -28,16 +52,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
-        sector: _sectorController.text,
+        sector: _selectedSector ?? "", // Solo enviamos el nombre del sector
         deviceToken: deviceToken ?? "",
       );
 
       try {
-        // Intentar registrar al usuario
         await _authService.registerUser(user);
         _showSuccessDialog();
       } catch (e) {
-        // Mostrar el mensaje del error del servidor
         _showErrorDialog(e.toString());
       } finally {
         setState(() {
@@ -98,8 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller: _emailController,
                 decoration: InputDecoration(labelText: "Correo Electrónico"),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                value!.isEmpty ? "Ingrese un correo válido" : null,
+                validator: (value) => value!.isEmpty ? "Ingrese un correo válido" : null,
               ),
               TextFormField(
                 controller: _passwordController,
@@ -108,10 +129,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 validator: (value) =>
                 value!.length < 6 ? "La contraseña debe tener al menos 6 caracteres" : null,
               ),
-              TextFormField(
-                controller: _sectorController,
+              SizedBox(height: 20),
+              // Dropdown para seleccionar sector
+              DropdownButtonFormField<String>(
+                value: _selectedSector,
                 decoration: InputDecoration(labelText: "Sector"),
-                validator: (value) => value!.isEmpty ? "Ingrese su sector" : null,
+                items: _sectors.map((Sector sector) {
+                  return DropdownMenuItem<String>(
+                    value: sector.name,
+                    child: Text(sector.name),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedSector = value;
+                  });
+                },
+                validator: (value) => value == null ? "Seleccione un sector" : null,
               ),
               SizedBox(height: 20),
               _isLoading
