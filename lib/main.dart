@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String userRole = 'PUBLICO'; //
+    String userRole = 'ADMINISTRADOR'; //
 
     return MaterialApp(
       title: 'Notificaciones Push',
@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         ...publicRoutes,
-        if (userRole == 'ADMIN') ...adminRoutes,
-        if (userRole == 'USER') ...userRoutes,
+        if (userRole == 'ADMINISTRADOR') ...adminRoutes,
+        if (userRole == 'USUARIO') ...userRoutes,
       },
       home: HomeScreen(userRole: userRole),
 
