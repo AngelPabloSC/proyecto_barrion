@@ -4,11 +4,7 @@ class NotificationDialog extends StatelessWidget {
   final String title;
   final String body;
 
-  const NotificationDialog({
-    Key? key,
-    required this.title,
-    required this.body,
-  }) : super(key: key);
+  const NotificationDialog({super.key, required this.title, required this.body});
 
   @override
   Widget build(BuildContext context) {
