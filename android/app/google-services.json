@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1015611722441",
+    "project_id": "barrion-4cb54",
+    "storage_bucket": "barrion-4cb54.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015611722441:android:9eb6b534175f63bfa89b18",
+        "android_client_info": {
+          "package_name": "com.example.barrion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyhUZO3DoN3doKqlFfmRWJZ573jGqPlXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015611722441:android:08692eb5ab946198a89b18",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_barrion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyhUZO3DoN3doKqlFfmRWJZ573jGqPlXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
