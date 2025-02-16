@@ -7,5 +7,5 @@ final Map<String, WidgetBuilder> userRoutes = {
   '/profile': (context) => PerfilScreen(),
   '/history': (context) => HistorialScreen(),
   '/cut_register': (context) => RegistroCortesScreen(),
-  '/home': (context) => HomeScreen(userRole: 'USER'),
+  '/home': (context) => HomeScreen(),
 };

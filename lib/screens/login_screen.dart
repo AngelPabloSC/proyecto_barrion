@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_barrion/services/sign_in_service.dart';
+import 'package:provider/provider.dart';
+import 'package:proyecto_barrion/providers/auth_provider.dart';
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -9,10 +11,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
-  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
@@ -25,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('assets/images/logo.jpg'), // Tu logo aquí
+                backgroundImage: AssetImage('assets/images/logo.jpg'),
               ),
               const SizedBox(height: 20),
               Card(
@@ -41,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          hintText: 'juanito123@gmail.com',
+                          hintText: 'tuemail@gmail.com',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -50,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 20),
-
                       TextField(
                         controller: passwordController,
                         obscureText: true,
@@ -64,25 +66,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-
                       isLoading
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                         onPressed: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
+                          setState(() => isLoading = true);
 
-                          bool success = await authService.loginUser(
+                          bool success = await authProvider.login(
                             emailController.text,
                             passwordController.text,
                           );
 
-                          setState(() {
-                            isLoading = false;
-                          });
+                          setState(() => isLoading = false);
 
                           if (success) {
+                            String route = authProvider.isAdmin ? '/adminHome' : '/userHome';
+                            Navigator.pushReplacementNamed(context, route);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Login Exitoso')),
                             );

@@ -7,6 +7,7 @@ import 'package:proyecto_barrion/routes/private_routes_user.dart';
 import 'package:proyecto_barrion/routes/public_routes.dart';
 import 'package:proyecto_barrion/screens/home_screen.dart';
 import 'package:proyecto_barrion/theme/theme_provider.dart';
+import 'package:proyecto_barrion/providers/auth_provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,23 +29,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ThemeProvider(context),
+    return MultiProvider( // Aquí usamos MultiProvider para registrar varios providers
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()), // Registra AuthProvider
+        ChangeNotifierProvider(create: (context) => ThemeProvider(context)), // Registra ThemeProvider
+      ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
-          String userRole = 'PUBLICO';
+          return Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              String userRole = authProvider.isAuthenticated
+                  ? (authProvider.isAdmin ? 'ADMINISTRADOR' : 'USUARIO')
+                  : 'PUBLICO';
 
-          return MaterialApp(
-            title: 'Notificaciones Push',
-            navigatorKey: navigatorKey,
-            theme: themeProvider.themeData,
-            initialRoute: '/',
-            routes: {
-              ...publicRoutes,
-              if (userRole == 'ADMINISTRADOR') ...adminRoutes,
-              if (userRole == 'USUARIO') ...userRoutes,
+              return MaterialApp(
+                title: 'Notificaciones Push',
+                navigatorKey: navigatorKey,
+                theme: themeProvider.themeData,
+                initialRoute: authProvider.isAuthenticated ? '/home' : '/',
+                routes: {
+                  ...publicRoutes,
+                  if (userRole == 'ADMINISTRADOR') ...adminRoutes,
+                  if (userRole == 'USUARIO') ...userRoutes,
+                },
+                home: const HomeScreen(), // Eliminar el parámetro userRole
+              );
             },
-            home: HomeScreen(userRole: userRole),
           );
         },
       ),

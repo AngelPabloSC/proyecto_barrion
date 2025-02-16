@@ -6,6 +6,6 @@ import '/screens/home_screen.dart';
 final Map<String, WidgetBuilder> adminRoutes = {
   '/profile': (context) => PerfilScreen(),
   '/history': (context) => HistorialScreen(),
-  '/home': (context) => HomeScreen(userRole: 'ADMIN'),
+  '/home': (context) => HomeScreen(),
   '/cut_register': (context) => RegistroCortesScreen(),
 };
