@@ -6,27 +6,34 @@ final String _endPointLogin = "/user/login";
 
 class AuthService {
   Future<Map<String, dynamic>?> loginUser(String email, String password) async {
-    print("Datos que se envían al servidor (login): email: $email, password: $password");
+    print("🔍 AuthService: Intentando login con email: $email");
+
     try {
+      String url = "$domain$_endPointLogin";
+      print("🔗 URL de la petición: $url");
+
+      var headers = {"Content-Type": "application/json"};
+      var body = jsonEncode({'email': email, 'password': password});
+
+      print("📡 Enviando petición...");
       var response = await http.post(
-        Uri.parse("$domain$_endPointLogin"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+        Uri.parse(url),
+        headers: headers,
+        body: body,
       );
 
-      print("Respuesta del servidor: ${response.body}");
+      print("✅ Respuesta del servidor: ${response.statusCode}");
+      print("📄 Body: ${response.body}");
 
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.body);
-        return responseBody['data']; // Devolvemos solo los datos de usuario
+        return responseBody['data'];
       } else {
+        print("⚠ Error en la petición: ${response.statusCode} - ${response.body}");
         return null;
       }
     } catch (e) {
-      print('Error en el login: $e');
+      print("❌ Error en AuthService: $e");
       return null;
     }
   }
