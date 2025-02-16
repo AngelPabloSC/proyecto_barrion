@@ -80,8 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           setState(() => isLoading = false);
 
                           if (success) {
-                            String route = authProvider.isAdmin ? '/adminHome' : '/userHome';
-                            Navigator.pushReplacementNamed(context, route);
+                            String route = authProvider.isAdmin ? '/' : '/';
+                            Navigator.pushReplacementNamed(context, '/home');
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Login Exitoso')),
                             );

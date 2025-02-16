@@ -8,6 +8,8 @@ import 'package:proyecto_barrion/routes/public_routes.dart';
 import 'package:proyecto_barrion/screens/home_screen.dart';
 import 'package:proyecto_barrion/theme/theme_provider.dart';
 import 'package:proyecto_barrion/providers/auth_provider.dart';
+import 'package:proyecto_barrion/components/splash_screen.dart'; // Importa el SplashScreen
+
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -42,17 +44,18 @@ class MyApp extends StatelessWidget {
                   ? (authProvider.isAdmin ? 'ADMINISTRADOR' : 'USUARIO')
                   : 'PUBLICO';
 
-              return MaterialApp(
+              return MaterialApp( // Remove `const`
                 title: 'Notificaciones Push',
                 navigatorKey: navigatorKey,
                 theme: themeProvider.themeData,
-                initialRoute: authProvider.isAuthenticated ? '/home' : '/',
+                initialRoute: authProvider.isAuthenticated ? '/home' : '/home',  // Adjust initial route
                 routes: {
                   ...publicRoutes,
                   if (userRole == 'ADMINISTRADOR') ...adminRoutes,
                   if (userRole == 'USUARIO') ...userRoutes,
                 },
-                home: const HomeScreen(), // Eliminar el parámetro userRole
+                // Remove the `home` property
+                // home: const HomeScreen(), // Remove this line
               );
             },
           );

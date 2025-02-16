@@ -9,26 +9,22 @@ class AuthProvider with ChangeNotifier {
   bool get isAdmin => _isAdmin;
 
   Future<bool> login(String email, String password) async {
-    print("AuthProvider: Iniciando login con $email");
+
 
     AuthService authService = AuthService();
     var userData = await authService.loginUser(email, password);
 
-    print("AuthProvider: Respuesta de loginUser -> $userData");
-
     if (userData != null) {
       _isAuthenticated = true;
-      _isAdmin = userData['role'] == 'admin';
+      _isAdmin = userData['isAdmin'] == true;
       notifyListeners();
       return true;
     } else {
-      print("AuthProvider: Login fallido, userData es null");
+
       return false;
     }
   }
   void logout() {
-    print("AuthProvider: Cerrando sesión...");
-
     _isAuthenticated = false;
     _isAdmin = false;
 

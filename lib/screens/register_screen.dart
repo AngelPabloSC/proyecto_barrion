@@ -19,8 +19,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final SectorService _sectorService = SectorService();
 
   bool _isLoading = false;
-  String? _selectedSector; // Variable para el sector seleccionado
-  List<Sector> _sectors = []; // Lista de sectores disponibles
+  String? _selectedSector;
+  List<Sector> _sectors = [];
 
   @override
   void initState() {
@@ -28,7 +28,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _fetchSectors();
   }
 
-  /// Obtiene los sectores desde el servicio
   void _fetchSectors() async {
     try {
       List<Sector> sectors = await _sectorService.getAllSectors();
@@ -40,7 +39,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  /// Registra al usuario con los datos ingresados
   void _registerUser() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -52,15 +50,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
-        sector: _selectedSector ?? "", // Solo enviamos el nombre del sector
+        sector: _selectedSector ?? "",
         deviceToken: deviceToken ?? "",
       );
 
       try {
         await _authService.registerUser(user);
-        _showSuccessDialog();
+        _showDialog("Registro Exitoso", "Usuario registrado correctamente.");
       } catch (e) {
-        _showErrorDialog(e.toString());
+        _showDialog("Error en el Registro", "Error al registrar el usuario: ${e.toString()}");
       } finally {
         setState(() {
           _isLoading = false;
@@ -69,31 +67,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  void _showSuccessDialog() {
+  // Método único para mostrar el diálogo
+  void _showDialog(String title, String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Registro Exitoso"),
-        content: Text("Usuario registrado correctamente."),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Error en el Registro"),
+        title: Text(title),
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context), // Cierra el diálogo
             child: Text("OK"),
           ),
         ],
