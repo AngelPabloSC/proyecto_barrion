@@ -4,7 +4,7 @@ import 'package:proyecto_barrion/models/user_model.dart';
 import 'package:proyecto_barrion/services/notification_service.dart';
 import 'package:proyecto_barrion/services/sector_service.dart';
 import 'package:proyecto_barrion/models/sector_model.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -101,11 +101,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: "Correo Electrónico"),
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  labelText: "Correo Electrónico",
+                  labelStyle: GoogleFonts.poppins(color: Colors.grey), // Estilo del label
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => value!.isEmpty ? "Ingrese un correo válido" : null,
               ),
               TextFormField(
+                style: GoogleFonts.lato(),
                 controller: _passwordController,
                 decoration: InputDecoration(labelText: "Contraseña"),
                 obscureText: true,

@@ -5,11 +5,12 @@ final String _endPointLogin = "/user/login";
 
 class AuthService {
   Future<Map<String, dynamic>?> loginUser(String email, String password) async {
+    print("🔍 AuthService: Intentando login con email: $email");
     var body = jsonEncode({'email': email, 'password': password});
-
+    print("📡 Cuerpo de la solicitud: $body");
     try {
       String url = "$domain$_endPointLogin";
-
+      print("🔗 URL de la petición: $url");
 
       var headers = {"Content-Type": "application/json"};
       var body = jsonEncode({'email': email, 'password': password});
@@ -21,7 +22,8 @@ class AuthService {
         body: body,
       );
 
-
+      print("✅ Respuesta del servidor: ${response.statusCode}");
+      print("📄 Body: ${response.body}");
 
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.body);
@@ -31,7 +33,7 @@ class AuthService {
         return null;
       }
     } catch (e) {
-
+      print("❌ Error en AuthService: $e");
       return null;
     }
   }
