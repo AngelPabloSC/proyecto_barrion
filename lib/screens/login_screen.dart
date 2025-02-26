@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          hintText: '********',
+                          hintText: '',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -92,13 +92,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                            backgroundColor: const Color(0xFFF4F5A9),
+                            padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                         ),
                         child: const Text(
-                          'Iniciar Sesión',
+                          'Iniciar Sesión',
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
