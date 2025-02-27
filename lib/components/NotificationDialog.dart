@@ -13,10 +13,6 @@ class NotificationDialog extends StatelessWidget {
       content: Text(body),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
           onPressed: () => Navigator.pop(context, 'OK'),
           child: const Text('OK'),
         ),
