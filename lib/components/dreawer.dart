@@ -16,54 +16,88 @@ class CustomDrawer extends StatelessWidget {
     final menuData = roleMenuService.getMenuByRole(userRole);
     final menuItems = menuData['menuItems'];
 
-    final themeProvider = Provider.of<ThemeProvider>(context); // Accede al ThemeProvider
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Drawer(
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text(
-              'Bienvenido!',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+          // Reemplazamos UserAccountsDrawerHeader con un Container personalizado
+          Container(
+            height: 150, // Altura del encabezado
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.yellow.shade50, Colors.yellow.shade100],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                for (var item in menuItems)
-                  ListTile(
-                    title: Text(item['name']),
-                    onTap: () {
-                      Navigator.pushNamed(context, item['route']);
-                    },
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.person, size: 50, color: Colors.black12),
                   ),
-              ],
+                  SizedBox(height: 10), // Espacio entre la imagen y el texto
+                  Text(
+                    authProvider.isAuthenticated ? "Usuario" : "Invitado",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 5), // Espacio entre el nombre y el correo
+                  Text(
+                    authProvider.isAuthenticated ? "usuario@email.com" : "No autenticado",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Spacer(),
-          // Botón para alternar el tema (usando Switch o IconButton)
+
+          for (var item in menuItems)
+            ListTile(
+              leading: Icon(Icons.arrow_right, color: Colors.black),
+              title: Text(
+                item['name'],
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, item['route']);
+              },
+            ),
+
+          Divider(color: Colors.black),
+
           ListTile(
-            title: Text('Modo oscuro'),
-            leading: Icon(Icons.brightness_6), // Icono de modo oscuro
+            title: Text('Modo oscuro', style: TextStyle(fontSize: 16, color: Colors.black)),
+            leading: Icon(Icons.brightness_6, color: Colors.black45),
             trailing: Switch(
               value: themeProvider.isDarkMode,
               onChanged: (value) {
-                themeProvider.toggleTheme(context); // Cambia el tema
+                themeProvider.toggleTheme(context);
               },
             ),
           ),
-          // Mostrar el botón de cerrar sesión solo si el usuario está autenticado
+
           if (authProvider.isAuthenticated)
             ListTile(
-              title: Text('Cerrar sesión'),
-              leading: Icon(Icons.exit_to_app),
+              title: Text('Cerrar sesión', style: TextStyle(fontSize: 16, color: const Color(0xD5974A4A))),
+              leading: Icon(Icons.exit_to_app, color: const Color(0xD5974A4A)),
               onTap: () {
                 authProvider.logout();
                 Navigator.pushReplacementNamed(context, '/login');
               },
             ),
+
+          SizedBox(height: 10),
         ],
       ),
     );

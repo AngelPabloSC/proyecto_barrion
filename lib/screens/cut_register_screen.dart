@@ -4,6 +4,7 @@ import 'package:proyecto_barrion/services/register_notificaciton_service.dart';
 import 'package:proyecto_barrion/services/sector_service.dart';
 import 'package:proyecto_barrion/models/sector_model.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegistroCortesScreen extends StatefulWidget {
   @override
@@ -66,96 +67,126 @@ class _RegistroCortesScreenState extends State<RegistroCortesScreen> {
     );
 
     String responseMessage = await NotificationService.sendNotification(notification);
-    bool isSuccess = responseMessage.contains("Notificación enviada exitosamente");
+    bool isSuccess = responseMessage.contains("Notificación enviada exitosamente");
     _showMessage(responseMessage, isSuccess);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text("Registro de Cortes"),
-        backgroundColor: Colors.blueAccent,
+        title: Text(
+          "Registro de Cortes",
+          style: GoogleFonts.oswald(fontSize: 30, color: Colors.black),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xfffDFDF2),
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Seleccione el servicio", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            DropdownSearch<String>(
-              popupProps: PopupProps.menu(),
-              items: _services,
-              dropdownDecoratorProps: DropDownDecoratorProps(
-                dropdownSearchDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Servicio",
-                  hintText: "Seleccione un servicio",
-                ),
-              ),
-              onChanged: (String? value) {
-                setState(() {
-                  _selectedService = value;
-                });
-              },
-              selectedItem: _selectedService,
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 400),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildDropdown("Seleccione el servicio", _services, _selectedService, (value) {
+                  setState(() {
+                    _selectedService = value;
+                  });
+                }),
+                SizedBox(height: 16),
+                _buildDropdown("Seleccione el sector", _sectors.map((s) => s.name).toList(), _selectedSector, (value) {
+                  setState(() {
+                    _selectedSector = value;
+                  });
+                }, showSearchBox: true),
+                SizedBox(height: 16),
+                _buildTextField("Mensaje", messageController),
+                SizedBox(height: 24),
+                _buildSubmitButton(),
+              ],
             ),
-            SizedBox(height: 16),
-            Text("Seleccione el sector", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            DropdownSearch<String>(
-              popupProps: PopupProps.dialog(
-                showSearchBox: true,
-              ),
-              items: _sectors.map((sector) => sector.name).toList(),
-              dropdownDecoratorProps: DropDownDecoratorProps(
-                dropdownSearchDecoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Sector",
-                  hintText: "Seleccione un sector",
-                ),
-              ),
-              onChanged: (String? value) {
-                setState(() {
-                  _selectedSector = value;
-                });
-              },
-              selectedItem: _selectedSector,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(String label, List<String> items, String? selectedItem, Function(String?) onChanged, {bool showSearchBox = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center, // <-- Asegura alineación central
+      children: [
+        Center( // <-- Envuelve el texto en Center
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center, // <-- Asegura que el texto esté centrado
+          ),
+        ),
+        SizedBox(height: 8),
+        DropdownSearch<String>(
+          popupProps: showSearchBox ? PopupProps.dialog(showSearchBox: true) : PopupProps.menu(),
+          items: items,
+          dropdownDecoratorProps: DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              labelText: label,
+              hintText: "Seleccione una opción",
             ),
-            SizedBox(height: 16),
-            Text("Mensaje", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            TextField(
-              controller: messageController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Mensaje",
-                hintText: "Escriba el mensaje",
-              ),
-              maxLines: 3,
-            ),
-            SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _sendNotification,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    "Enviar Notificación",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
+          onChanged: onChanged,
+          selectedItem: selectedItem,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center, // <-- Cambia a 'center'
+      children: [
+        Center( // <-- Asegura que el texto esté centrado
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            labelText: label,
+            hintText: "Escriba su mensaje",
+          ),
+          maxLines: 3,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _sendNotification,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Text(
+            "Enviar Notificación",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFF4F5A9),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
       ),
     );

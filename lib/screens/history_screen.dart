@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_barrion/services/notification_history_service.dart';  // Ajusta la importación según tu estructura de proyecto
 import 'package:proyecto_barrion/models/notification_model.dart.dart';  // Asegúrate de importar tu modelo
+import 'package:google_fonts/google_fonts.dart';
 
 class HistorialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Historial")),
+      appBar: AppBar(
+        title: Text(
+            "Historial",
+          style: GoogleFonts.oswald(fontSize: 30, color: Colors.black),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xfffDFDF2),
+        elevation: 0,
+      ),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: NotificationHistoryService.fetchNotificationHistory(),  // Llamada al servicio
         builder: (context, snapshot) {
